@@ -56,4 +56,15 @@ public class CustomerService {
     public Boolean existsById(String id) {
         return repository.existsById(id);
     }
+
+    public CustomerResponse findById(String customerId) {
+        return repository.findById(customerId)
+                .map(mapper::fromCustomer)
+                .orElseThrow(() -> new CustomerNotFoundException(String.format("No customer found with the id %s", customerId))
+                );
+    }
+
+    public void deleteCustomer(String customerId) {
+        repository.deleteById(customerId);
+    }
 }
