@@ -8,6 +8,8 @@ import org.shavin.ecommerce.kafka.OrderConfirmation;
 import org.shavin.ecommerce.kafka.OrderProducer;
 import org.shavin.ecommerce.orderline.OrderLineRequest;
 import org.shavin.ecommerce.orderline.OrderLineService;
+import org.shavin.ecommerce.payment.PaymentClient;
+import org.shavin.ecommerce.payment.PaymentRequest;
 import org.shavin.ecommerce.product.ProductClient;
 import org.shavin.ecommerce.product.PurchaseRequest;
 import org.springframework.stereotype.Service;
@@ -25,6 +27,7 @@ public class OrderService {
     private final OrderMapper mapper;
     private final OrderLineService orderLineService;
     private final OrderProducer orderProducer;
+    private final PaymentClient paymentClient;
 
     public Integer createOrder(OrderRequest request) {
         // check the customer
@@ -50,6 +53,15 @@ public class OrderService {
         }
 
         // start payment process
+        var paymentrequest = new PaymentRequest(
+                request.id(),
+                request.amount(),
+                request.paymentMethod(),
+                order.getId(),
+                order.getReference(),
+                customer
+        );
+        paymentClient.requestOrderPayment(paymentrequest);
 
         // send the order conformation to our notification service (to kafka broker)
         orderProducer.sendOrderConfirmation(new OrderConfirmation(

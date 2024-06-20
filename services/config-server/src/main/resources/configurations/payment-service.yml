@@ -1,6 +1,6 @@
 spring:
   datasource:
-    url: jdbc:postgresql://localhost:5433/order
+    url: jdbc:postgresql://localhost:5433/payment
     username: shavin
     password: shavin
     driver-class-name: org.postgresql.Driver
@@ -9,19 +9,14 @@ spring:
       ddl-auto: update
     database: postgresql
     database-platform: org.hibernate.dialect.PostgreSQLDialect
+
   kafka:
     producer:
       bootstrap-servers: localhost:9092
       key-serializer: org.apache.kafka.common.serialization.StringSerializer
       value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
       properties:
-        spring.json.type.mapping: orderConfirmation:org.shavin.ecommerce.kafka.OrderConfirmation
+        spring.json.type.mapping: paymentNotificationRequest:org.shavin.ecommerce.notification.PaymentNotificationRequest
 
 server:
-  port: 8070
-
-application:
-  config:
-    customer-url: http://localhost:8090/api/v1/customers
-    product-url: http://localhost:8050/api/v1/products
-    payment-url: http://localhost:8060/api/v1/payments
+  port: 8060
