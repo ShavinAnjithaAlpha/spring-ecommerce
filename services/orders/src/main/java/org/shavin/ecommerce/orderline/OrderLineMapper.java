@@ -19,4 +19,11 @@ public class OrderLineMapper {
                 )
                 .build();
     }
+
+    public OrderLineResponse fromOrderLine(OrderLineResponse orderLineResponse) {
+        return new OrderLineResponse(
+                orderLineResponse.id(),
+                orderLineResponse.quantity()
+        );
+    }
 }
